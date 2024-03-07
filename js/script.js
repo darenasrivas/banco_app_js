@@ -314,3 +314,37 @@ const userImageMapping = {
         loginTitle.classList.add("card-title-error"); // Agregar clase para identificar el mensaje de error
       });
   });
+
+
+  ///////// FUNCIÓN DISPLAY MOVIMIENTOS /////////
+  
+  // Definición de la variable `movimientos`
+  let movimientos = []; // Inicializamos movimientos como un array vacío
+  
+  // Función para mostrar los movimientos actualizados en la lista
+  function displayMovimientos() {
+    // Obtener el elemento de la lista de movimientos
+    const movementsList = document.querySelector(".movements__list");
+  
+    // Limpiar cualquier contenido previo en la lista
+    movementsList.innerHTML = "";
+  
+    // Iterar sobre los movimientos y agregar cada uno como un elemento de la lista
+    movimientos.forEach((movimiento) => {
+      const listItem = document.createElement("li");
+  
+      // Determinar el tipo de movimiento (depósito o retiro)
+      const movementType = movimiento.amount > 0 ? "deposit" : "withdrawal";
+  
+      // Asignar el texto y la clase correspondiente al tipo de movimiento al elemento de la lista
+      listItem.textContent = `${movementType}: ${movimiento.date} / ${Math.abs(movimiento.amount)}€`;
+      listItem.classList.add(
+        "movements__type",
+        `movements__type--${movementType}`,
+        "mt-3"
+      );
+  
+      // Agregar el elemento de la lista al contenedor de la lista
+      movementsList.appendChild(listItem);
+    });
+  }
