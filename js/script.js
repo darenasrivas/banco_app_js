@@ -447,4 +447,78 @@ const userImageMapping = {
     toInput.value = "";
     amountInput.value = "";
   });
+
+
+  ///////// BOTÓN LOGOUT /////////
+  
+  // Obtener el botón de logout
+  const logoutBtn = document.getElementById("logoutBtn");
+  
+  // Agregar evento de clic al botón de logout
+  logoutBtn.addEventListener("click", function () {
+    // Recargar la página
+    window.location.reload();
+  });
+  
+  ///////// FUNCIÓNES SETACCOUNT Y SETTOKEN /////////
+  
+  function setAccount(accountData) {
+    // Implementa el código para manejar los datos de la cuenta
+    console.log("Datos de la cuenta:", accountData);
+  }
+  
+  function setToken(tokenData) {
+    // Implementa el código para manejar el token
+    token = tokenData;
+    console.log("Token:", tokenData);
+  }
+  
+  ///////// FUNCIÓN FORMATDATE - FORMATEAR LA FECHA /////////
+  
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  
+  ///////// SETEAR LA FECHA ACTUAL /////////
+  
+  // Obtener el elemento con la clase 'date'
+  const dateElement = document.querySelector(".date");
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado (por ejemplo, DD/MM/YYYY)
+  const formattedDate = currentDate.toLocaleDateString("es-ES"); // Cambia 'es-ES' por el código del idioma deseado
+  // Actualizar el contenido del elemento con la fecha actual
+  dateElement.textContent = formattedDate;
+  
+  ///////// SETEAR UN TIMER QUE RELOGUEA AL PASAR 2 MINUTOS /////////
+  
+  const startLogoutTimer = () => {
+    let duration = 120; // Duración del temporizador en segundos (2 minutos)
+    const timerSpan = document.querySelector(".timer");
+  
+    const updateTimer = () => {
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      timerSpan.textContent = formattedTime;
+  
+      if (duration <= 0) {
+        clearInterval(timerInterval);
+        location.reload(); // Recargar la página al llegar a cero para volver al login
+      } else {
+        duration--; // Reducir el tiempo restante
+      }
+    };
+  
+    updateTimer(); // Actualizar el temporizador inmediatamente
+    const timerInterval = setInterval(updateTimer, 1000); // Actualizar el temporizador cada segundo
+  };
+  
+  // Llama a la función startLogoutTimer después de hacer login correctamente
+  startLogoutTimer();
+  
   
