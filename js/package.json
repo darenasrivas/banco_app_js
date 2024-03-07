@@ -1,0 +1,20 @@
+{
+  "name": "adivina-numero",
+  "version": "1.0.0",
+  "description": "Juego de adivinar un número",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "rsync -ahv --exclude=.git --exclude=node_modules -e 'ssh -p 22123' ./ david@david.certweb.infenlaces.com:/home/david/david_siproxy/",
+    "build": "npm i minify -g"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "htmlhint": "^1.1.4",
+    "jest": "^29.7.0",
+    "prettier": "^3.1.1"
+  },
+  "author": "",
+  "license": "ISC"
+}
