@@ -348,3 +348,103 @@ const userImageMapping = {
       movementsList.appendChild(listItem);
     });
   }
+
+
+  ///////// BOTÓN TRANSFERENCIA - HACER LA TRANSFERNCIA /////////
+  
+  // Obtener referencia a los elementos del formulario de transferencia
+  const transferForm = document.querySelector(".form--transfer");
+  const toInput = document.querySelector(".form__input--to");
+  const amountInput = document.querySelector(".form__input--amount");
+  const transferBtn = document.querySelector(".form__btn--transfer");
+  
+  // Agregar un evento de clic al botón de transferencia
+  transferBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+  
+    // Obtener los valores de la cuenta de destino y la cantidad a transferir
+    const destinationAccount = toInput.value;
+    const amount = parseFloat(amountInput.value);
+  
+    // Obtener el saldo actual del balance
+    const balanceValueElement = document.querySelector(".balance__value");
+    const currentBalance = parseFloat(balanceValueElement.textContent);
+  
+    // Verificar si la cantidad es válida
+    if (isNaN(amount) || amount <= 0) {
+      alert("🙅🙅🙅 Please enter a valid amount to transfer. 🙅🙅🙅");
+      return;
+    }
+  
+    // Verificar si el monto de la transferencia es mayor que el saldo disponible
+    if (amount > currentBalance) {
+      alert("💸💸💸 Transfer amount exceeds available balance. 💸💸💸");
+      return;
+    }
+  
+    // Verificar si la cuenta de destino es válida o no existe
+    if (!destinationAccount) {
+      alert("��� Please enter a valid destination account. ���");
+      return;
+    }
+  
+    // Realizar la solicitud HTTP POST al servidor para la transferencia
+    fetch(`${SERVER_URL}/transfer?token=${token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ destinationAccount, amount }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+  
+        // Aquí puedes manejar la respuesta del servidor si lo deseas
+        console.log(data)
+  
+        alert(data.message); // Muestra un mensaje de éxito o fallo
+  
+        // Actualizar la cantidad del balance en el DOM
+        const balanceValueElement = document.querySelector(".balance__value");
+        const currentBalance = parseFloat(balanceValueElement.textContent);
+        const newBalance = currentBalance - amount;
+        balanceValueElement.textContent = `${newBalance}€`;
+  
+        // Actualizar la cantidad total de egresos en el resumen en el DOM
+        const balanceOutElement = document.querySelector(".summary__value--out");
+        const currentOut = parseFloat(balanceOutElement.textContent);
+        const newOut = currentOut + amount;
+        balanceOutElement.textContent = `${newOut}€`;
+  
+        // Crear un nuevo elemento li para representar el nuevo movimiento
+        const newMovement = document.createElement("li");
+  
+        // Determinar el tipo de movimiento (depósito o retiro)
+        const movementType = amount > 0 ? "withdrawal" : "deposit";
+  
+        // Agregar las clases CSS correspondientes al tipo de movimiento al elemento li
+        newMovement.classList.add(
+          "movements__type",
+          `movements__type--${movementType}`,
+          "mt-3"
+        );
+  
+        // Agregar el contenido del nuevo movimiento al elemento li
+        newMovement.textContent = `${movementType}: ${formatDate(new Date())} / ${Math.abs(amount)}€`;
+  
+        // Obtener la lista de movimientos
+        const movementsList = document.querySelector(".movements__list");
+  
+        // Insertar el nuevo elemento li al principio de la lista de movimientos
+        movementsList.insertBefore(newMovement, movementsList.firstChild);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred while processing the transfer."); // Muestra un mensaje de error si hay un problema
+      });
+  
+    // Limpiar los campos del formulario después de la transferencia
+    toInput.value = "";
+    amountInput.value = "";
+  });
+  
